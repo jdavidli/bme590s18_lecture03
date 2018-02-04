@@ -35,3 +35,4 @@ Your Teamname should:
 * Represent data as dictionary
 * Represent data as Class/Objects
 * Store data in database (MongoDB / SQL)
+* Databases are cool
