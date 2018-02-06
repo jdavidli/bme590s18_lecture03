@@ -8,7 +8,6 @@ def collect_all_csv_filenames():
     global read_files
     read_files = glob.glob("*.csv")
     read_files.remove('mlp6.csv')
-    #print(read_files)
 
 # reads in all the csv and writes out to a single csv
 def read_write_csv():
@@ -28,7 +27,7 @@ def read_write_csv():
                     everyone.write('\n')
                 else:
                     continue
-                #print(line)
+        # removes final new line
         everyone.truncate(everyone.tell()-1)
         everyone.close()
 
@@ -38,10 +37,10 @@ def check_no_spaces():
     with open("everyone.csv",'r') as everyone:
         csvreader = csv.reader(everyone, delimiter = ",")
         for row in csvreader:
-            #print(row[4])
             if row[4].isalnum():
                 i = i + 1;
-    #print(i)
+    everyone.close()
+
 
 # uses regex to check if the team name is camel case
 # camel case is defined here as consisting only of alphanumeric characters,
@@ -54,18 +53,29 @@ def check_camel_case():
         csvreader = csv.reader(everyone, delimiter = ",")
         for row in csvreader:
             if camelCase.match(row[4]):
-                #print("Camel Case: " + row[4])
                 i = i + 1;
-            #else:
-            #    print("Not Camel Case: " + row[4])
     print("Total number of team names that are camel case: " + str(i))
+    everyone.close()
 
+# writes out a json file for all csv data
+def write_json():
+    everyone = open('everyone.csv','r')
+    csvreader = csv.DictReader(everyone)
+    # defines field names
+    csvreader.fieldnames = ("FirstName","LastName","NetID","GithubName","TeamName")
+    for row in csvreader:
+        jsonfile = open(row['NetID'] + '.json', 'w')
+        out = json.dumps(row)
+        jsonfile.write(out)
+        jsonfile.close()
+    everyone.close()
 
 def main():
     collect_all_csv_filenames()
     read_write_csv()
     check_no_spaces()
     check_camel_case()
+    write_json()
 
 if __name__ == "__main__":
     main()
